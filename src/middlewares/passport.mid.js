@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { compareHash, createHash } from "../helpers/hash.util.js";
 import { usersManager } from "../data/manager.mongo.js";
 import { createToken } from "../helpers/token.util.js";
@@ -20,16 +21,18 @@ passport.use(
         /* validar algunos datos obligatorios */
         const { city } = req.body;
         if (!city) {
-          const error = new Error("Invalid data");
-          error.statusCode = 400;
-          throw error;
+          // const error = new Error("Invalid data");
+          // error.statusCode = 400;
+          // throw error;
+          return done(null, null, { message: "Invalid data", statusCode: 400 });
         }
         /* validar si el usuario ya fue registrado */
         let user = await usersManager.readBy({ email });
         if (user) {
-          const error = new Error("Invalid credentials");
-          error.statusCode = 401;
-          throw error;
+          // const error = new Error("Invalid credentials");
+          // error.statusCode = 401;
+          // throw error;
+          return done(null, null, { message: "Invalid credentials", statusCode: 401 });
         }
         /* registrar al usuario (crearlo) con la contraseña protegida! */
         req.body.password = createHash(password);
@@ -56,16 +59,18 @@ passport.use(
         /* validar si el usuario ya fue registrado */
         let user = await usersManager.readBy({ email });
         if (!user) {
-          const error = new Error("Invalid credentials");
-          error.statusCode = 401;
-          throw error;
+          // const error = new Error("Invalid credentials");
+          // error.statusCode = 401;
+          // throw error;
+          return done(null, null, { message: "Invalid credentials", statusCode: 401 });
         }
         /* validar si la contraseña es correcta */
         const verify = compareHash(password, user?.password);
         if (!verify) {
-          const error = new Error("Invalid credentials");
-          error.statusCode = 401;
-          throw error;
+          // const error = new Error("Invalid credentials");
+          // error.statusCode = 401;
+          // throw error;
+          return done(null, null, { message: "Invalid credentials", statusCode: 401 });
         }
         const data = {
           _id: user._id,
@@ -122,5 +127,56 @@ passport.use(
     }
   )
 );
-
+passport.use(
+  "user",
+  new JwtStrategy(
+    {
+      secretOrKey: process.env.SECRET,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => req?.signedCookies?.token,
+      ]),
+    },
+    async (data, done) => {
+      try {
+        const { _id, role, email } = data;
+        const user = await usersManager.readBy({ _id, role, email });
+        if (!user) {
+          // const error = new Error("Forbidden");
+          // error.statusCode = 403;
+          // throw error;
+          return done(null, null, { message: "Forbidden", statusCode: 403 });
+        }
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
+passport.use(
+  "admin",
+  new JwtStrategy(
+    {
+      secretOrKey: process.env.SECRET,
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => req?.signedCookies?.token,
+      ]),
+    },
+    async (data, done) => {
+      try {
+        const { _id, role, email } = data;
+        const user = await usersManager.readBy({ _id, role, email });
+        if (!user || user?.role !== "ADMIN") {
+          // const error = new Error("Forbidden");
+          // error.statusCode = 403;
+          // throw error;
+          return done(null, null, { message: "Forbidden", statusCode: 403 });
+        }
+        done(null, user);
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
 export default passport;

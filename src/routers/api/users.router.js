@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { usersManager } from "../../data/manager.mongo.js";
+import passport from "../../middlewares/passport.mid.js";
+import passportCb from "../../middlewares/passportCb.mid.js";
 
 const usersRouter = Router();
 
@@ -93,10 +95,11 @@ const destroyById = async (req, res, next) => {
     next(error);
   }
 };
-usersRouter.post("/", createOne);
-usersRouter.get("/", readAll);
-usersRouter.get("/:id", readById);
-usersRouter.put("/:id", updateById);
-usersRouter.delete("/:id", destroyById);
+
+usersRouter.post("/", passportCb("admin"), createOne);
+usersRouter.get("/", passportCb("admin"), readAll);
+usersRouter.get("/:id", passportCb("admin"), readById);
+usersRouter.put("/:id", passportCb("user"), updateById);
+usersRouter.delete("/:id", passportCb("user"), destroyById);
 
 export default usersRouter;

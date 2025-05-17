@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { usersManager } from "../../data/manager.mongo.js";
-import passport from "../../middlewares/passport.mid.js";
+// import passport from "../../middlewares/passport.mid.js";
+import passportCb from "../../middlewares/passportCb.mid.js";
 import { verifyToken } from "../../helpers/token.util.js";
 
 const authRouter = Router();
@@ -83,25 +84,27 @@ const badAuthCb = (req, res, next) => {
     next(error);
   }
 };
-const optBadAuth = { session: false, failureRedirect: "/api/auth/bad-auth" };
+const forbiddenCb = (req, res, next) => {
+  try {
+    const error = new Error("Forbidden");
+    error.statusCode = 403;
+    throw error;
+  } catch (error) {
+    next(error);
+  }
+};
 
 authRouter.post(
   "/register",
-  passport.authenticate("register", optBadAuth),
+  passportCb("register"),
   registerCb
 );
-authRouter.post("/login", passport.authenticate("login", optBadAuth), loginCb);
-authRouter.post("/signout", signoutCb);
-authRouter.post("/online", onlineCb);
+authRouter.post("/login", passportCb("login"), loginCb);
+authRouter.post("/signout", passportCb("user"), signoutCb);
+authRouter.post("/online", passportCb("user"), onlineCb);
 authRouter.get("/bad-auth", badAuthCb);
-authRouter.get(
-  "/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
-authRouter.get(
-  "/google/redirect",
-  passport.authenticate("google", optBadAuth),
-  loginCb
-);
+authRouter.get("/forbidden", forbiddenCb);
+authRouter.get("/google", passportCb("google", { scope: ["email", "profile"] }));
+authRouter.get("/google/redirect", passportCb("google"), loginCb);
 
 export default authRouter;
