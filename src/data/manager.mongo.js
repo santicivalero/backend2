@@ -16,6 +16,7 @@ class ManagerMongo {
 
 const usersManager = new ManagerMongo(User);
 const productsManager = new ManagerMongo(Product);
-const cartsManager = new ManagerMongo(Cart);
+//const cartsManager = new ManagerMongo(Cart);
 
-export { usersManager, productsManager, cartsManager };
+export { usersManager, productsManager };
+export default ManagerMongo;
