@@ -1,5 +1,8 @@
 import RouterHelper from "../helpers/router.helper.js";
-import { productsManager } from "../data/manager.mongo.js";
+import { productsManager, usersManager } from "../data/manager.mongo.js";
+import CustomCartsManager from "../data/custom/carts.custom.manager.js";
+
+const cartsManager = new CustomCartsManager();
 
 const homeViewCb = async (req, res) => {
   const products = await productsManager.readAll();
@@ -20,7 +23,14 @@ const loginViewCb = async (req, res) => {
 };
 const profileViewCb = async (req, res) => {
   const products = await productsManager.readAll();
-  res.status(200).render("profile", { products });
+  const user = await usersManager.readById(req.user._id);
+  res.status(200).render("profile", { products, user });
+};
+
+const cartViewCb = async (req, res) => {
+  const products = await productsManager.readAll();
+  const cart = await cartsManager.readByIdPopulated(req.user.cart_id);
+  res.status(200).render("cart", { products, cart });
 };
 
 class ViewsRouter extends RouterHelper {
@@ -34,67 +44,9 @@ class ViewsRouter extends RouterHelper {
     this.render("/register", ["PUBLIC"], registerViewCb);
     this.render("/login", ["PUBLIC"], loginViewCb);
     this.render("/profile", ["USER", "ADMIN"], profileViewCb);
+    this.render("/cart", ["USER"], cartViewCb);
   };
 }
 
 const viewsRouter = new ViewsRouter().getRouter();
 export default viewsRouter;
-
-// import { Router } from "express";
-// import { productsManager } from "../data/manager.mongo.js";
-
-// const viewsRouter = Router();
-
-// const homeViewCb = async (req, res) => {
-//     try {
-//         const products = await productsManager.readAll()
-//         res.status(200).render("index", { products })
-//     } catch (error) {
-//         res.status(error.statusCode || 500).render("error", { error })
-//     }
-// }
-
-// const productViewCb = async (req, res) => {
-//     try {
-//         const { pid } = req.params
-//         const product = await productsManager.readById(pid)
-//         res.status(200).render("product", { product })
-//     } catch (error) {
-//         res.status(error.statusCode || 500).render("error", { error })
-//     }
-// }
-
-// const registerViewCb = async (req, res) => {
-//     try {
-//         const products = await productsManager.readAll()
-//         res.status(200).render("register", { products })
-//     } catch (error) {
-//         res.status(error.statusCode || 500).render("error", { error })
-//     }
-// }
-// const loginViewCb = async (req, res) => {
-//     try {
-//         const products = await productsManager.readAll()
-//         res.status(200).render("login", { products })
-//     } catch (error) {
-//         res.status(error.statusCode || 500).render("error", { error })
-//     }
-// }
-// const profileViewCb = async (req, res) => {
-//     try {
-//         const products = await productsManager.readAll()
-//         res.status(200).render("profile", { products })
-//     } catch (error) {
-//         res.status(error.statusCode || 500).render("error", { error })
-//     }
-// }
-
-// viewsRouter.get("/", homeViewCb)
-// viewsRouter.get("/product/:pid", productViewCb)
-// viewsRouter.get("/register", registerViewCb)
-// viewsRouter.get("/login", loginViewCb)
-// viewsRouter.get("/profile", profileViewCb)
-
-
-
-// export default viewsRouter;

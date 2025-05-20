@@ -21,7 +21,11 @@ const ready = async () => {
 server.listen(port, ready);
 
 /* engine settings */
-server.engine("handlebars", engine());
+server.engine("handlebars", engine({
+  helpers: {
+    multiply: (a, b) => (a * b).toFixed(2),
+  }
+}));
 server.set("view engine", "handlebars");
 server.set("views", __dirname + "/src/views");
 

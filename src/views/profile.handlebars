@@ -1,0 +1,27 @@
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-lg p-4 text-center">
+        <img src="{{user.avatar}}" alt="Avatar" class="rounded-circle mx-auto mb-4" style="width: 120px; height: 120px; object-fit: cover;">
+
+        <h2 class="text-success mb-3">{{user.name}}</h2>
+
+        <p class="mb-2">
+          <strong>Email:</strong><br>
+          {{user.email}}
+        </p>
+
+        <p>
+          <strong>City:</strong><br>
+          {{#if user.city}}
+            {{user.city}}
+          {{else}}
+            <em>No city specified</em>
+          {{/if}}
+        </p>
+
+        <a href="/" class="btn btn-outline-success mt-3">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</main>

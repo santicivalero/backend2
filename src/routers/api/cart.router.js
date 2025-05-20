@@ -4,20 +4,17 @@ import CustomCartsManager from "../../data/custom/carts.custom.manager.js";
 
 const cartsManager = new CustomCartsManager();
 
-// Crear carrito para el usuario logueado
 const createOne = async (req, res) => {
   const { _id: user_id } = req.user;
   const cart = await cartsManager.createOne({ user_id, products: [] });
   res.json201(cart._id);
 };
 
-// Solo admins
 const readAll = async (req, res) => {
   const carts = await cartsManager.readAllPopulated();
   carts.length ? res.json200(carts) : res.json404();
 };
 
-// Ver carrito por ID, pero solo si pertenece al usuario logueado
 const readById = async (req, res) => {
   const { id } = req.params;
   const { _id: user_id } = req.user;
@@ -29,7 +26,6 @@ const readById = async (req, res) => {
   res.json200(cart);
 };
 
-// Actualizar carrito (solo si es del usuario)
 const updateById = async (req, res) => {
   const { id } = req.params;
   const { _id: user_id } = req.user;
@@ -44,7 +40,6 @@ const updateById = async (req, res) => {
   updated ? res.json200(updated) : res.json404();
 };
 
-// Eliminar carrito (solo si es del usuario)
 const destroyById = async (req, res) => {
   const { id } = req.params;
   const { _id: user_id } = req.user;
@@ -58,7 +53,6 @@ const destroyById = async (req, res) => {
   deleted ? res.json200(deleted) : res.json404();
 };
 
-// Agregar producto al carrito (verificación de dueño)
 const addProduct = async (req, res) => {
   const { cid, pid } = req.params;
   const { _id: user_id } = req.user;
@@ -75,7 +69,6 @@ const addProduct = async (req, res) => {
   updatedCart ? res.json200(updatedCart) : res.json404();
 };
 
-// Quitar producto del carrito (verificación de dueño)
 const removeProduct = async (req, res) => {
   const { cid, pid } = req.params;
   const { _id: user_id } = req.user;
@@ -89,7 +82,6 @@ const removeProduct = async (req, res) => {
   updatedCart ? res.json200(updatedCart) : res.json404();
 };
 
-// Vaciar carrito (verificación de dueño)
 const emptyCart = async (req, res) => {
   const { cid } = req.params;
   const { _id: user_id } = req.user;
@@ -124,105 +116,3 @@ class CartsRouter extends RouterHelper {
 
 const cartsRouter = new CartsRouter().getRouter();
 export default cartsRouter;
-
-// import RouterHelper from "../../helpers/router.helper.js";
-// import { productsManager } from "../../data/manager.mongo.js";
-// import CustomCartsManager from "../../data/custom/carts.custom.manager.js";
-
-// const cartsManager = new CustomCartsManager();
-
-// const createOne = async (req, res) => {
-//   const { _id: user_id } = req.user;
-//   const cart = await cartsManager.createOne({ user_id, products: [] });
-//   res.json201(cart._id);
-// };
-
-// const readAll = async (req, res) => {
-//   const carts = await cartsManager.readAll({});
-//   carts.length ? res.json200(carts) : res.json404();
-// };
-
-// const readById = async (req, res) => {
-//   const { id } = req.params;
-//   const cart = await cartsManager.readById(id);
-//   cart ? res.json200(cart) : res.json404();
-// };
-
-// const updateById = async (req, res) => {
-//   const { id } = req.params;
-//   const data = req.body;
-//   const updated = await cartsManager.updateById(id, data);
-//   updated ? res.json200(updated) : res.json404();
-// };
-
-// const destroyById = async (req, res) => {
-//   const { id } = req.params;
-//   const deleted = await cartsManager.destroyById(id);
-//   deleted ? res.json200(deleted) : res.json404();
-// };
-
-// // Agregar producto al carrito
-// const addProduct = async (req, res) => {
-//   const { cid, pid } = req.params;
-//   const productExists = await productsManager.readById(pid);
-//   if (!productExists) return res.json404();
-//   const cart = await cartsManager.addProductToCart(cid, pid);
-//   cart ? res.json200(cart) : res.json404();
-// };
-
-// // Quitar producto del carrito
-// const removeProduct = async (req, res) => {
-//   const { cid, pid } = req.params;
-//   const cart = await cartsManager.removeProductFromCart(cid, pid);
-//   cart ? res.json200(cart) : res.json404();
-// };
-
-// // Vaciar carrito
-// const emptyCart = async (req, res) => {
-//   const { cid } = req.params;
-//   const cart = await cartsManager.emptyCart(cid);
-//   cart ? res.json200(cart) : res.json404();
-// };
-
-// class CartsRouter extends RouterHelper {
-//   constructor() {
-//     super();
-//     this.init();
-//   }
-
-//   init = () => {
-//     this.create("/", ["USER"], createOne);
-//     this.read("/", ["ADMIN"], readAll);
-//     this.read("/:id", ["USER"], readById);
-//     this.update("/:id", ["USER"], updateById);
-//     this.destroy("/:id", ["USER"], destroyById);
-
-//     this.update("/:cid/products/:pid", ["USER"], addProduct);
-//     this.destroy("/:cid/products/:pid", ["USER"], removeProduct);
-//     this.destroy("/:cid/products", ["USER"], emptyCart);
-//   };
-// }
-
-// const cartsRouter = new CartsRouter().getRouter();
-// export default cartsRouter;
-
-// import RouterHelper from "../../helpers/router.helper.js";
-
-// class CartsRouter extends RouterHelper {
-//   constructor() {
-//     super();
-//     this.init();
-//   }
-//   init = () => {};
-// }
-
-// const cartsRouter = new CartsRouter().getRouter();
-// export default cartsRouter;
-
-/////////////////
-
-// import { Router } from "express";
-
-// const cartsRouter = Router();
-
-// export default cartsRouter;

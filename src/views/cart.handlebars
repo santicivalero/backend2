@@ -1,0 +1,32 @@
+<main class="container py-5">
+  <h1 class="text-success text-center mb-4">Your Cart</h1>
+
+  {{#if cart.products.length}}
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10">
+        <ul class="list-group mb-4">
+          {{#each cart.products}}
+          <li class="list-group-item d-flex align-items-center justify-content-between flex-wrap">
+            <div class="d-flex align-items-center">
+              <img src="{{this.product.image}}" alt="{{this.product.title}}" class="me-3 rounded" style="width: 80px; height: 80px; object-fit: cover;">
+              <div>
+                <h5 class="mb-1">{{this.product.title}}</h5>
+                <small class="text-muted">USD {{this.product.price}} x {{this.quantity}}</small>
+              </div>
+            </div>
+            <div>
+              <strong>USD {{multiply this.product.price this.quantity}}</strong>
+            </div>
+          </li>
+          {{/each}}
+        </ul>
+
+        <div class="text-end fs-5">
+          <strong>Total: USD {{total}}</strong>
+        </div>
+      </div>
+    </div>
+  {{else}}
+    <p class="text-center text-muted">Your cart is empty.</p>
+  {{/if}}
+</main>
