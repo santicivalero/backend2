@@ -1,4 +1,4 @@
-import "dotenv/config.js";
+import "./src/helpers/env.helper.js";
 import express, { json, urlencoded } from "express";
 import { engine } from "express-handlebars";
 import __dirname from "./utils.js";
@@ -8,14 +8,18 @@ import errorHandler from "./src/middlewares/errorHandler.mid.js";
 import pathHandler from "./src/middlewares/pathHandler.mid.js";
 import dbConnect from "./src/helpers/dbConnect.helper.js";
 import cookieParser from "cookie-parser";
+import argsHelper from "./src/helpers/args.helper.js";
 //import session from "express-session";
 //import MongoStore from "connect-mongo";
+
 
 /* server settings */
 const server = express();
 const port = process.env.PORT || 8080;
 const ready = async () => {
   console.log("server ready on port " + port);
+  console.log("mode: "+ argsHelper.mode);
+
   await dbConnect(process.env.URL_MONGO);
 };
 server.listen(port, ready);
