@@ -12,7 +12,7 @@ class CartsController {
   };
 
   readAll = async (req, res) => {
-    const carts = await this.service.readAll();
+    const carts = await this.service.readAllPopulated();
     carts.length ? res.json200(carts) : res.json404();
   };
 
@@ -49,25 +49,25 @@ class CartsController {
     deleted ? res.json200(deleted) : res.json404();
   };
 
-  addProduct = async (req, res) => {
+  addProductToCart = async (req, res) => {
     const { cid, pid } = req.params;
     const { _id: user_id } = req.user;
     const cart = await this.service.readById(cid);
     if (!cart || cart.user_id._id.toString() !== user_id.toString()) {
       return res.json403();
     }
-    const updated = await this.service.addProduct(cid, pid);
+    const updated = await this.service.addProductToCart(cid, pid);
     updated ? res.json200(updated) : res.json404();
   };
 
-  removeProduct = async (req, res) => {
+  removeProductFromCart = async (req, res) => {
     const { cid, pid } = req.params;
     const { _id: user_id } = req.user;
     const cart = await this.service.readById(cid);
     if (!cart || cart.user_id._id.toString() !== user_id.toString()) {
       return res.json403();
     }
-    const updated = await this.service.removeProduct(cid, pid);
+    const updated = await this.service.removeProductFromCart(cid, pid);
     updated ? res.json200(updated) : res.json404();
   };
 

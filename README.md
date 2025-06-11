@@ -17,6 +17,36 @@ Permite gestionar usuarios, productos y carritos, utilizando autenticación con 
 - **dotenv**: Manejo de variables de entorno desde archivos `.env`.
 - **morgan**: Logger HTTP para desarrollo.
 
+## Arquitectura y Patrones Aplicados
+
+Este proyecto implementa una **arquitectura por capas** que separa las responsabilidades y facilita la **escalabilidad**, el **testing** y el **mantenimiento**. Además, utiliza **patrones de diseño** ampliamente adoptados en proyectos backend.
+
+### Arquitectura en Capas
+
+- **Enrutador (`routes/`)**  
+  Define los endpoints de la API y delega la lógica al controlador correspondiente. Cada recurso (`products`, `carts`, `users`, `auth`) tiene su propio archivo de rutas.
+
+- **Controlador (`controllers/`)**  
+  Orquesta las operaciones solicitadas por los endpoints. Se encarga de interpretar la solicitud y responder, delegando la lógica de negocio al servicio.
+
+- **Servicio (`services/`)**  
+  Contiene la lógica de negocio pura. Aquí se toman decisiones sobre qué hacer con los datos, sin preocuparse de cómo se obtienen o guardan. Llama al repositorio para interactuar con los datos.
+
+- **Repositorio (`repositories/`)**  
+  Actúa como intermediario entre el servicio y el DAO. Aplica patrones como DTO y desacopla la lógica de persistencia de la lógica de negocio.
+
+### Patrones de Diseño
+
+- **DAO (`dao/`)**  
+  Implementa el acceso directo a los datos, ya sea en MongoDB, memoria o archivos (FS). Define operaciones CRUD básicas reutilizables.
+
+- **Factory (`dao/factory.js`)**  
+  Permite seleccionar dinámicamente el tipo de persistencia (**MongoDB**, **memoria** o **archivos**) según la variable de entorno `PERSISTENCE`, sin cambiar el resto de la aplicación.
+
+- **DTO (`dto/`)**  
+  (**Data Transfer Object**) Define estructuras claras y normalizadas para los datos que viajan desde y hacia el backend. Mejora la validación y consistencia entre capas.
+
+
 ## Instalación
 
 1. Clonar el repositorio:
@@ -45,6 +75,9 @@ URL_MONGO=mongodb+srv://<usuario>:<password>@cluster0.mongodb.net/<tu-bdd>
 SECRET=tu_clave_secreta
 GOOGLE_ID=tu_id_de_google
 GOOGLE_SECRET=tu_secreto_de_google
+GOOGLE_EMAIL=tu_email_de_google
+GOOGLE_PASSWORD=tu_app_password_de_google
+PERSISTENCE=persistencia(mongo -por defecto-, fs o memory)
 ```
 
 5. Iniciar el servidor:

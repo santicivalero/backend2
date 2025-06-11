@@ -2,7 +2,7 @@ import User from "./models/users.model.js";
 import Product from "./models/products.model.js";
 //import Cart from "./models/carts.model.js";
 
-class ManagerMongo {
+class DaoMongo {
   constructor(model) {
     this.model = model;
   }
@@ -14,9 +14,9 @@ class ManagerMongo {
   destroyById = async (id) => await this.model.findByIdAndDelete(id);
 }
 
-const usersManager = new ManagerMongo(User);
-const productsManager = new ManagerMongo(Product);
+const usersManager = new DaoMongo(User);
+const productsManager = new DaoMongo(Product);
 //const cartsManager = new ManagerMongo(Cart);
 
 export { usersManager, productsManager };
-export default ManagerMongo;
+export default DaoMongo;

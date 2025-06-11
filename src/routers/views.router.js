@@ -1,34 +1,34 @@
 import RouterHelper from "../helpers/router.helper.js";
-import { productsManager, usersManager } from "../data/manager.mongo.js";
-import CustomCartsManager from "../data/custom/carts.custom.manager.js";
+import productsRepository from "../repositories/products.repository.js";
+import usersRepository from "../repositories/users.repository.js";
+import cartsManager from "../repositories/carts.repository.js";
 
-const cartsManager = new CustomCartsManager();
 
 const homeViewCb = async (req, res) => {
-  const products = await productsManager.readAll();
+  const products = await productsRepository.readAll();
   res.status(200).render("index", { products });
 };
 const productViewCb = async (req, res) => {
   const { pid } = req.params;
-  const product = await productsManager.readById(pid);
+  const product = await productsRepository.readById(pid);
   res.status(200).render("product", { product });
 };
 const registerViewCb = async (req, res) => {
-  const products = await productsManager.readAll();
+  const products = await productsRepository.readAll();
   res.status(200).render("register", { products });
 };
 const loginViewCb = async (req, res) => {
-  const products = await productsManager.readAll();
+  const products = await productsRepository.readAll();
   res.status(200).render("login", { products });
 };
 const profileViewCb = async (req, res) => {
-  const products = await productsManager.readAll();
-  const user = await usersManager.readById(req.user._id);
+  const products = await productsRepository.readAll();
+  const user = await usersRepository.readById(req.user._id);
   res.status(200).render("profile", { products, user });
 };
 
 const cartViewCb = async (req, res) => {
-  const products = await productsManager.readAll();
+  const products = await productsRepository.readAll();
   const cart = await cartsManager.readByIdPopulated(req.user.cart_id);
   res.status(200).render("cart", { products, cart });
 };

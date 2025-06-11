@@ -1,15 +1,15 @@
-import { productsManager } from "../data/manager.mongo.js";
+import productsRepository from "../repositories/products.repository.js";
 
 class ProductsService {
   constructor() {
-    this.manager = productsManager;
+    this.repository = productsRepository;
   }
 
-  createOne = async (data) => await this.manager.createOne(data);
-  readAll = async (filter) => await this.manager.readAll(filter);
-  readById = async (id) => await this.manager.readById(id);
-  updateById = async (id, data) => await this.manager.updateById(id, data);
-  destroyById = async (id) => await this.manager.destroyById(id);
+  createOne = async (data) => await this.repository.createOne(data);
+  readAll = async (filter) => await this.repository.readAll(filter);
+  readById = async (id) => await this.repository.readById(id);
+  updateById = async (id, data) => await this.repository.updateById(id, data);
+  destroyById = async (id) => await this.repository.destroyById(id);
 }
 
 const productsService = new ProductsService();

@@ -1,43 +1,44 @@
-import CustomCartsManager from "../data/custom/carts.custom.manager.js";
-import { productsManager } from "../data/manager.mongo.js";
+import cartsRepository from "../repositories/carts.repository.js";
+import productsRepository from "../repositories/products.repository.js";
 
 class CartsService {
   constructor() {
-    this.manager = new CustomCartsManager();
+    this.repository = cartsRepository;
+    this.productsRepository = productsRepository;
   }
 
   createOne = async ({ user_id }) => {
-    return await this.manager.createOne({ user_id, products: [] });
+    return await this.repository.createOne({ user_id, products: [] });
   };
 
-  readAll = async () => {
-    return await this.manager.readAllPopulated();
+  readAllPopulated = async () => {
+    return await this.repository.readAllPopulated();
   };
 
-  readById = async (id) => await this.manager.readById(id);
+  readById = async (id) => await this.repository.readById(id);
   
-  readByIdPopulated = async (id) => await this.manager.readByIdPopulated(id);
+  readByIdPopulated = async (id) => await this.repository.readByIdPopulated(id);
 
   updateById = async (id, data) => {
-    return await this.manager.updateById(id, data);
+    return await this.repository.updateById(id, data);
   };
 
   destroyById = async (id) => {
-    return await this.manager.destroyById(id);
+    return await this.repository.destroyById(id);
   };
 
-  addProduct = async (cid, pid) => {
-    const product = await productsManager.readById(pid);
+  addProductToCart = async (cid, pid) => {
+    const product = await productsRepository.readById(pid);
     if (!product) return null;
-    return await this.manager.addProductToCart(cid, pid);
+    return await this.repository.addProductToCart(cid, pid);
   };
 
-  removeProduct = async (cid, pid) => {
-    return await this.manager.removeProductFromCart(cid, pid);
+  removeProductFromCart = async (cid, pid) => {
+    return await this.repository.removeProductFromCart(cid, pid);
   };
 
   emptyCart = async (cid) => {
-    return await this.manager.emptyCart(cid);
+    return await this.repository.emptyCart(cid);
   };
 }
 

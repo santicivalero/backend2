@@ -1,4 +1,4 @@
-import ManagerMongo from "../manager.mongo.js";
+import ManagerMongo from "../dao.mongo.js";
 import Cart from "../models/carts.model.js";
 
 class CustomCartsManager extends ManagerMongo {
