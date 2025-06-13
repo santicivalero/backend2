@@ -16,6 +16,8 @@ Permite gestionar usuarios, productos y carritos, utilizando autenticación con 
 - **bcrypt**: Hashing seguro de contraseñas.
 - **dotenv**: Manejo de variables de entorno desde archivos `.env`.
 - **morgan**: Logger HTTP para desarrollo.
+- **nodemailer**: Envío de correos electrónicos (verificación y recuperación de contraseña).
+- **commander**: CLI interna para tareas administrativas.
 
 ## Arquitectura y Patrones Aplicados
 
@@ -46,6 +48,15 @@ Este proyecto implementa una **arquitectura por capas** que separa las responsab
 - **DTO (`dto/`)**  
   (**Data Transfer Object**) Define estructuras claras y normalizadas para los datos que viajan desde y hacia el backend. Mejora la validación y consistencia entre capas.
 
+## Servicio de Mailing
+
+Este proyecto incluye un sistema de **mailing automatizado** mediante **Nodemailer**, con las siguientes funcionalidades:
+
+- Envío de correo de verificación al registrarse.
+- Envío de enlace para restablecer contraseña.
+- Redirección del usuario a formularios para ingresar código de verificación o nueva contraseña.
+
+Los correos se envían usando una cuenta de **Gmail** con [contraseñas de aplicación](https://myaccount.google.com/apppasswords).
 
 ## Instalación
 
@@ -78,7 +89,9 @@ GOOGLE_SECRET=tu_secreto_de_google
 GOOGLE_EMAIL=tu_email_de_google
 GOOGLE_PASSWORD=tu_app_password_de_google
 PERSISTENCE=persistencia(mongo -por defecto-, fs o memory)
+URL=tu_url
 ```
+- URL se utiliza para generar los enlaces de verificación y recuperación de contraseña que llegan por mail.
 
 5. Iniciar el servidor:
 
@@ -98,6 +111,8 @@ npm run dev
 - **GET /api/auth/google/redirect** → Redirección tras login con Google.
 - **GET /api/auth/bad-auth** → Ruta de error de autenticación.
 - **GET /api/auth/forbidden** → Ruta de error por falta de permisos.
+- **POST /api/auth/reset-password** → Envía un correo con enlace para restablecer contraseña.
+- **PUT /api/auth/reset-password/:email** → Actualiza la contraseña del usuario.
 
 ## Endpoints de Carritos (/api/carts)
 
@@ -134,6 +149,10 @@ npm run dev
 - **GET /login** → Formulario de login.
 - **GET /profile** → Perfil del usuario autenticado.
 - **GET /cart** → Carrito del usuario autenticado.
+- **GET /reset-password** → Formulario para solicitar reset.
+- **GET /reset-password/:email** → Formulario para ingresar nueva contraseña.
+
+
 
 ## Autor
 

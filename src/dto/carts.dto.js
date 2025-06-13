@@ -10,7 +10,7 @@ class CartsDTO {
     }
 
     this.user_id = data.user_id;
-    this.products = data.products || []; // debería ser un array de objetos { product, quantity }
+    this.products = data.products || [];
     this.state = data.state || "reserved";
   }
 }
